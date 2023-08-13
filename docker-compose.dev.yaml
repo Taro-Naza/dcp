@@ -1,0 +1,35 @@
+version: '3.9'
+
+services:
+    jotra:
+        image: jotra
+        container_name: jotra
+        build:
+            context: .
+            dockerfile: Dockerfile.dev
+        ports:
+            - 3000:3000
+        volumes:
+            - ./src:/jotra/src
+            - ./public:/jotra/public
+        environment:
+            ENV CHOKIDAR_USEPOLLING: true
+        env_file:
+            - .env.development
+
+    mongodb:
+        image: mongo
+        container_name: mongodb
+        restart: always
+        ports:
+            - 27017:27017
+        environment:
+            MONGO_INITDB_ROOT_USERNAME: ${DB_USERNAME}
+            MONGO_INITDB_ROOT_PASSWORD: ${DB_PASSWORD}
+            MONGO_INITDB_DATABASE: ${DB_NAME}
+
+        volumes:
+            - mongodb_data:/data/db
+volumes:
+    mongodb_data:
+
